@@ -5,15 +5,15 @@
 class Piece
 {
 public:
-	inline int getRow();
-	inline int getColumn();
-	inline void setRow(int row);
-	inline void setColumn(int column);
-	inline int getColor();
-	inline int getType();
-	inline static std::string getRowString(int row);
-	inline static std::string getColumnString(int column);
-	inline void setIsCaptured(bool isCaptured);
+	int getRow();
+	int getColumn();
+	void setRow(int row);
+	void setColumn(int column);
+	int getColor();
+	int getType();
+	static std::string getRowString(int row);
+	static std::string getColumnString(int column);
+	void setIsCaptured(bool isCaptured);
 	bool getIsCaptured();
 
 	Piece(int color, int type, int row, int column);
@@ -52,7 +52,6 @@ private:
 	int column;
 	int row;
 	bool isCaptured = false;
-
 };
 
 #endif // !PIECE_H_

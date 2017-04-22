@@ -8,13 +8,13 @@ class ChessGame
 public:
 	ChessGame();
 	std::vector<Piece> pieces;
-	inline std::vector<Piece> getPieces();
+	std::vector<Piece> getPieces();
 	static const int GAME_STATE_WHITE = 0;
 	static const int GAME_STATE_BLACK = 1;
 	static const int GAME_STATE_END = 2;
-	Piece getNonCapturedPieceAtLocation(int row, int column);
+	Piece *getNonCapturedPieceAtLocation(int row, int column);
 	bool isNonCapturedPieceAtLocation(int row, int column);
-	inline int getGameState();
+	int getGameState();
 	void changeGameState();
 
 	class Move
@@ -38,7 +38,7 @@ public:
 		Piece *sourcePiece;
 		Piece *targetPiece;
 		bool isTargetLocationCaptureable();
-		inline bool isTargetLocationFree();
+		bool isTargetLocationFree();
 		bool isValidBishopMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
 		bool isValidQueenMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
 		bool isValidPawnMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
