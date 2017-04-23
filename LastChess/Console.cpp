@@ -5,7 +5,6 @@ using namespace std;
 
 ChessGame game;
 
-void run();
 void handleMove(string input);
 int convertColumnStrToColumnInt(string strColumn);
 int convertRowStrToRowInt(string strRow);
@@ -14,14 +13,6 @@ string getNameOfPiece(Piece *piece);
 
 //=====================================================
 int main()
-{
-	run();
-	cout << endl;
-	system("pause");
-	return 0;
-}
-
-void run()
 {
 	string input = "";
 
@@ -35,18 +26,18 @@ void run()
 			cin >> input;
 			if (input == "exit")
 			{
-				return;
+				return 0;
 			}
 			else
 			{
-				//handleMove(input);
+				handleMove(input);
 			}
 
 			if (game.getGameState() == ChessGame::GAME_STATE_END)
 			{
 				printCurrentGameState();
 				cout << "KONIEC GRY!" << endl;
-				return;
+				return 0;
 			}
 
 		}
@@ -55,6 +46,73 @@ void run()
 			cout << "Blad run\n";
 		}
 	}
+	cout << endl;
+	system("pause");
+	return 0;
+}
+
+void handleMove(string input)
+{
+	string strSourceColumn = input.substr(0, 1);
+	string strSourceRow = input.substr(1, 1);
+	string strTargetColumn = input.substr(3, 1);
+	string strTargetRow = input.substr(4, 1);
+
+	int sourceColumn = 0, sourceRow = 0;
+	int targetColumn = 0, targetRow = 0;
+
+	sourceColumn = convertColumnStrToColumnInt(strSourceColumn);
+	sourceRow = convertRowStrToRowInt(strSourceRow);
+
+	targetColumn = convertColumnStrToColumnInt(strTargetColumn);
+	targetRow = convertRowStrToRowInt(strTargetRow);
+
+	ChessGame::Move move(sourceRow, sourceColumn, targetRow, targetColumn);
+	game.movePiece(move);
+	
+}
+
+int convertColumnStrToColumnInt(string strColumn)
+{
+	if (strColumn == "a")
+		return Piece::COLUMN_A;
+	else if (strColumn == "b")
+		return Piece::COLUMN_B;
+	else if (strColumn == "c")
+		return Piece::COLUMN_C;
+	else if (strColumn == "d")
+		return Piece::COLUMN_D;
+	else if (strColumn == "e")
+		return Piece::COLUMN_E;
+	else if (strColumn == "f")
+		return Piece::COLUMN_F;
+	else if (strColumn == "g")
+		return Piece::COLUMN_G;
+	else if (strColumn == "h")
+		return Piece::COLUMN_H;
+	else {
+	}
+}
+
+int convertRowStrToRowInt(string strRow)
+{
+	if (strRow == "1")
+		return Piece::ROW_1;
+	else if (strRow == "2")
+		return Piece::ROW_2;
+	else if (strRow == "3")
+		return Piece::ROW_3;
+	else if (strRow == "4")
+		return Piece::ROW_4;
+	else if (strRow == "5")
+		return Piece::ROW_5;
+	else if (strRow == "6")
+		return Piece::ROW_6;
+	else if (strRow == "7")
+		return Piece::ROW_7;
+	else if (strRow == "8")
+		return Piece::ROW_8;
+	else throw new exception();
 }
 
 void printCurrentGameState()
