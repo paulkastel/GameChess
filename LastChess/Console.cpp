@@ -67,8 +67,7 @@ void handleMove(string input)
 	targetColumn = convertColumnStrToColumnInt(strTargetColumn);
 	targetRow = convertRowStrToRowInt(strTargetRow);
 
-	ChessGame::Move move(sourceRow, sourceColumn, targetRow, targetColumn);
-	game.movePiece(move);
+	game.movePiece(sourceRow, sourceColumn, targetRow, targetColumn);
 	
 }
 

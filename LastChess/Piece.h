@@ -9,6 +9,7 @@ public:
 	int getColumn();
 	void setRow(int row);
 	void setColumn(int column);
+	void setType(int type);
 	int getColor();
 	int getType();
 	static std::string getRowString(int row);

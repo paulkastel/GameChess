@@ -101,7 +101,7 @@ bool ChessGame::isGameEndConditionReached()
 {
 	for each (Piece var in pieces)
 	{
-		if (var.getType() == Piece::TYPE_KING && var.getIsCaptured())
+		if (var.getType() == Piece::TYPE_KING && var.getIsCaptured()==true)
 		{
 			return true;
 		}
@@ -125,24 +125,15 @@ bool ChessGame::isNonCapturedPieceAtLocation(int color, int row, int column)
 	return false;
 }
 
-ChessGame::Move::Move(int sourceRow, int sourceColumn, int targetRow, int targetColumn)
+bool ChessGame::movePiece(int sourceRow, int sourceColumn, int targetRow, int targetColumn)
 {
-	this->sourceRow = sourceRow;
-	this->sourceColumn = sourceColumn;
-	this->targetColumn = targetColumn;
-	this->targetRow = targetRow;
-}
-
-
-bool ChessGame::movePiece(ChessGame::Move move)
-{
-	if (!move.isMoveValid())
+	if (!isMoveValid(sourceRow, sourceColumn, targetRow, targetColumn))
 	{
 		cout << "Ruch jest niepoprawny!" << endl;
 		return false;
 	}
 
-	Piece *piece = getNonCapturedPieceAtLocation(move.sourceRow, move.sourceColumn);
+	Piece *piece = getNonCapturedPieceAtLocation(sourceRow, sourceColumn);
 	int opponentColor;
 	if (piece->getColor() == Piece::COLOR_BLACK)
 	{
@@ -153,13 +144,13 @@ bool ChessGame::movePiece(ChessGame::Move move)
 		opponentColor = Piece::COLOR_WHITE;
 	}
 
-	if (isNonCapturedPieceAtLocation(opponentColor, move.targetRow, move.targetColumn))
+	if (isNonCapturedPieceAtLocation(opponentColor, targetRow, targetColumn))
 	{
-		Piece *opponentPiece = getNonCapturedPieceAtLocation(move.targetRow, move.targetColumn);
+		Piece *opponentPiece = getNonCapturedPieceAtLocation(targetRow, targetColumn);
 		opponentPiece->setIsCaptured(true);
 	}
-	piece->setRow(move.targetRow);
-	piece->setColumn(move.targetColumn);
+	piece->setRow(targetRow);
+	piece->setColumn(targetColumn);
 
 	if (isGameEndConditionReached())
 	{
@@ -169,18 +160,24 @@ bool ChessGame::movePiece(ChessGame::Move move)
 	{
 		this->changeGameState();
 	}
+
+	if (piece->getType() == Piece::TYPE_PAWN && piece->getRow() == Piece::ROW_8)
+	{
+		piece->setType(Piece::TYPE_BISHOP);
+	}
+
 	return true;
 }
 
-bool ChessGame::Move::isMoveValid()
+bool ChessGame::isMoveValid(int sourceRow, int sourceColumn, int targetRow, int targetColumn)
 {
-	int sR = this->sourceRow;
-	int sC = this->sourceColumn;
-	int tR = this->targetRow;
-	int tC = this->targetColumn;
+	int sR = sourceRow;
+	int sC = sourceColumn;
+	int tR = targetRow;
+	int tC = targetColumn;
 
-	sourcePiece = game.getNonCapturedPieceAtLocation(sR, sC);
-	targetPiece = game.getNonCapturedPieceAtLocation(tR, tC);
+	sourcePiece = getNonCapturedPieceAtLocation(sR, sC);
+	targetPiece = getNonCapturedPieceAtLocation(tR, tC);
 
 	if (sourcePiece == nullptr)
 	{
@@ -188,10 +185,10 @@ bool ChessGame::Move::isMoveValid()
 		return false;
 	}
 
-	if (sourcePiece->getColor() == Piece::COLOR_WHITE && game.getGameState() == ChessGame::GAME_STATE_WHITE)
+	if (sourcePiece->getColor() == Piece::COLOR_WHITE && getGameState() == ChessGame::GAME_STATE_WHITE)
 	{
 	}
-	else if(sourcePiece->getColor() == Piece::COLOR_BLACK && game.getGameState() == ChessGame::GAME_STATE_BLACK)
+	else if(sourcePiece->getColor() == Piece::COLOR_BLACK && getGameState() == ChessGame::GAME_STATE_BLACK)
 	{
 	}
 	else
@@ -241,7 +238,7 @@ bool ChessGame::Move::isMoveValid()
 	return true;
 }
 
-bool ChessGame::Move::isTargetLocationCaptureable()
+bool ChessGame::isTargetLocationCaptureable()
 {
 	if (targetPiece == nullptr)
 	{
@@ -257,12 +254,12 @@ bool ChessGame::Move::isTargetLocationCaptureable()
 	}
 }
 
-bool ChessGame::Move::isTargetLocationFree()
+bool ChessGame::isTargetLocationFree()
 {
 	return targetPiece == nullptr;
 }
 
-bool ChessGame::Move::isValidBishopMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn)
+bool ChessGame::isValidBishopMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn)
 {
 	if (isTargetLocationFree() || isTargetLocationCaptureable())
 	{
@@ -307,14 +304,14 @@ bool ChessGame::Move::isValidBishopMove(int sourceRow, int sourceColumn, int tar
 	return isValid;
 }
 
-bool ChessGame::Move::isValidQueenMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn)
+bool ChessGame::isValidQueenMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn)
 {
 	bool result = isValidBishopMove(sourceRow, sourceColumn, targetRow, targetColumn);
 	result |= isValidRookMove(sourceRow, sourceColumn, targetRow, targetColumn);
 	return result;
 }
 
-bool ChessGame::Move::isValidPawnMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn)
+bool ChessGame::isValidPawnMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn)
 {
 	bool isValid = false;
 	// The pawn may move forward to the unoccupied square immediately in front
@@ -401,7 +398,7 @@ bool ChessGame::Move::isValidPawnMove(int sourceRow, int sourceColumn, int targe
 	return isValid;
 }
 
-bool ChessGame::Move::isValidKnightMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn)
+bool ChessGame::isValidKnightMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn)
 {
 	// The knight moves to any of the closest squares which are not on the same rank,
 	// file or diagonal, thus the move forms an "L"-shape two squares long and one
@@ -453,7 +450,7 @@ bool ChessGame::Move::isValidKnightMove(int sourceRow, int sourceColumn, int tar
 	}
 }
 
-bool ChessGame::Move::isValidKingMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn)
+bool ChessGame::isValidKingMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn)
 {
 	// target location possible?
 	if (isTargetLocationFree() || isTargetLocationCaptureable()) {
@@ -510,7 +507,7 @@ bool ChessGame::Move::isValidKingMove(int sourceRow, int sourceColumn, int targe
 	return isValid;
 }
 
-bool ChessGame::Move::isValidRookMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn)
+bool ChessGame::isValidRookMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn)
 {
 	// The rook can move any number of squares along any rank or file, but
 	// may not leap over other pieces. Along with the king, the rook is also
@@ -558,7 +555,7 @@ bool ChessGame::Move::isValidRookMove(int sourceRow, int sourceColumn, int targe
 	return isValid;
 }
 
-bool ChessGame::Move::arePiecesBetweenSourceAndTarget(int sourceRow, int sourceColumn, int targetRow, int targetColumn, int rowIncrementPerStep, int columnIncrementPerStep)
+bool ChessGame::arePiecesBetweenSourceAndTarget(int sourceRow, int sourceColumn, int targetRow, int targetColumn, int rowIncrementPerStep, int columnIncrementPerStep)
 {
 	int currentRow = sourceRow + rowIncrementPerStep;
 	int currentColumn = sourceColumn + columnIncrementPerStep;
@@ -571,7 +568,7 @@ bool ChessGame::Move::arePiecesBetweenSourceAndTarget(int sourceRow, int sourceC
 			break;
 		}
 
-		if (game.isNonCapturedPieceAtLocation(currentRow, currentColumn)) {
+		if (isNonCapturedPieceAtLocation(currentRow, currentColumn)) {
 			cout<<"pieces in between source and target"<<endl;
 			return true;
 		}

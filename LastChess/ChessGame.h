@@ -9,37 +9,13 @@ public:
 	static const int GAME_STATE_WHITE = 0;
 	static const int GAME_STATE_BLACK = 1;
 	static const int GAME_STATE_END = 2;
-	
+
 	ChessGame();
 
-	class Move
-	{
-	public:
-		Move(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
-		int sourceRow;
-		int sourceColumn;
-		int targetRow;
-		int targetColumn;
+	bool isMoveValid(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
 
-		bool isMoveValid();
 
-	private:
-		Piece *sourcePiece;
-		Piece *targetPiece;
-
-		bool isTargetLocationCaptureable();
-		bool isTargetLocationFree();
-		bool isValidBishopMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
-		bool isValidQueenMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
-		bool isValidPawnMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
-		bool isValidKnightMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
-		bool isValidKingMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
-		bool isValidRookMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
-		bool arePiecesBetweenSourceAndTarget(int sourceRow, int sourceColumn, int targetRow, int targetColumn, int rowIncrementPerStep, int columnIncrementPerStep);
-
-	};
-
-	bool movePiece(Move move);
+	bool movePiece(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
 	//std::vector<Piece> getPieces();
 	Piece *getNonCapturedPieceAtLocation(int row, int column);
 	bool isNonCapturedPieceAtLocation(int row, int column);
@@ -53,6 +29,22 @@ private:
 	void createAndAddPiece(int color, int type, int row, int column);
 	bool isGameEndConditionReached();
 	bool isNonCapturedPieceAtLocation(int color, int row, int column);
+
+
+
+
+	Piece *sourcePiece;
+	Piece *targetPiece;
+
+	bool isTargetLocationCaptureable();
+	bool isTargetLocationFree();
+	bool isValidBishopMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
+	bool isValidQueenMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
+	bool isValidPawnMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
+	bool isValidKnightMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
+	bool isValidKingMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
+	bool isValidRookMove(int sourceRow, int sourceColumn, int targetRow, int targetColumn);
+	bool arePiecesBetweenSourceAndTarget(int sourceRow, int sourceColumn, int targetRow, int targetColumn, int rowIncrementPerStep, int columnIncrementPerStep);
 
 };
 

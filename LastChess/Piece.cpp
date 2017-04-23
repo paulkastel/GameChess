@@ -28,6 +28,11 @@ void Piece::setColumn(int column)
 	this->column = column;
 }
 
+void Piece::setType(int type)
+{
+	this->type = type;
+}
+
 int Piece::getColor()
 {
 	return this->color;
